@@ -122,36 +122,24 @@ class MatrixQuantumCircuit(QuantumCircuit):
         if control_qubit == target_qubit:
             raise ValueError("Control qubit cannot be the target qubit")
 
-        if abs(control_qubit - target_qubit) == 1:
-            # control qubit and target qubit are neighbours
-            if control_qubit < target_qubit:
-                # control qubit is smaller than targe qubit so we can apply CNOT gate
-                self.__apply_double_qubit_gate_with_next_qubit(CNOT, control_qubit)
-            else:
-                # control_qubit must be smaller than targe qubit, therefore the swaps
-                control_qubit, target_qubit = target_qubit, control_qubit
-                self.__swap_with_neighbours(control_qubit, target_qubit)
-                self.__apply_double_qubit_gate_with_next_qubit(CNOT, control_qubit)
-                self.__swap_with_neighbours(control_qubit, target_qubit)
+        # control qubit and target qubit are far away
+        if control_qubit < target_qubit:
+            # bring control qubit closer to target qubit using swap gates
+            for q in range(control_qubit, target_qubit - 1):
+                self.__swap_with_neighbours(q, q + 1)
+            # control qubit is just above target qubit
+            self.__apply_double_qubit_gate_with_next_qubit(CNOT, target_qubit - 1)
+            for q in range(target_qubit - 1, control_qubit, -1):
+                self.__swap_with_neighbours(q, q - 1)
         else:
-            # control qubit and target qubit are far away
-            if control_qubit < target_qubit:
-                # bring control qubit closer to target qubit using swap gates
-                for q in range(control_qubit, target_qubit - 1):
-                    self.__swap_with_neighbours(q, q + 1)
-                # control qubit is just above target qubit
-                self.__apply_double_qubit_gate_with_next_qubit(CNOT, target_qubit - 1)
-                for q in range(target_qubit - 1, control_qubit, -1):
-                    self.__swap_with_neighbours(q, q - 1)
-            else:
-                # bring target qubit closer to control qubit using swap gates
-                # note there is an extra swap to take target qubit below control qubit
-                for q in range(target_qubit, control_qubit):
-                    self.__swap_with_neighbours(q, q + 1)
-                # control qubit is now just above provided value
-                self.__apply_double_qubit_gate_with_next_qubit(CNOT, control_qubit - 1)
-                for q in range(control_qubit, target_qubit, -1):
-                    self.__swap_with_neighbours(q, q - 1)
+            # bring target qubit closer to control qubit using swap gates
+            # note there is an extra swap to take target qubit below control qubit
+            for q in range(target_qubit, control_qubit):
+                self.__swap_with_neighbours(q, q + 1)
+            # control qubit is now just above provided value
+            self.__apply_double_qubit_gate_with_next_qubit(CNOT, control_qubit - 1)
+            for q in range(control_qubit, target_qubit, -1):
+                self.__swap_with_neighbours(q, q - 1)
 
     def __swap_with_neighbours(self, qubit1, qubit2):
         """
@@ -162,9 +150,7 @@ class MatrixQuantumCircuit(QuantumCircuit):
             qubit2 (int): The second qubit index.
         """
         if abs(qubit1 - qubit2) != 1:
-            raise ValueError(
-                "The SWAP gate can only be applied between neighboring qubits."
-            )
+            raise ValueError("The SWAP gate can only be applied between neighboring qubits.")
 
         # Determine the smaller and larger indices
         min_qubit = min(qubit1, qubit2)
@@ -180,9 +166,7 @@ class MatrixQuantumCircuit(QuantumCircuit):
         """
         last_qubit_index = self.num_qubits - 1
         if qubit >= last_qubit_index:
-            raise ValueError(
-                "The double qubit can only be applied between neighboring qubits."
-            )
+            raise ValueError("The double qubit can only be applied between neighboring qubits.")
 
         # Construct the full matrix using Kronecker products
         unitary = np.eye(1)  # Start with a scalar identity
