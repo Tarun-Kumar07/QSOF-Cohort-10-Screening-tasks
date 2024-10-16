@@ -34,13 +34,9 @@ class TestMatrixQuantumCircuitInitialization:
     """
 
     @pytest.mark.parametrize("num_qubits", [-2, -1, 0])
-    def test_initialize_num_qubits_raises_error_for_non_positive_values(
-        self, num_qubits
-    ):
+    def test_initialize_num_qubits_raises_error_for_non_positive_values(self, num_qubits):
         """Test that initializing with non-positive num_qubits raises a ValueError."""
-        with pytest.raises(
-            ValueError, match="num_qubits must be greater than or equal to 1."
-        ):
+        with pytest.raises(ValueError, match="num_qubits must be greater than or equal to 1."):
             MatrixQuantumCircuit.initialize_num_qubits(num_qubits)
 
     @pytest.mark.parametrize("num_qubits", [1, 2])
@@ -60,9 +56,7 @@ class TestMatrixQuantumCircuitInitialization:
             np.array([1, 2, 3, 4]),
         ],
     )
-    def test_initialize_state_raises_error_for_non_normalized_states(
-        self, denormalized_state
-    ):
+    def test_initialize_state_raises_error_for_non_normalized_states(self, denormalized_state):
         """Test that initializing with a non-normalized state raises a ValueError."""
         with pytest.raises(ValueError, match="state must be normalized"):
             MatrixQuantumCircuit.initialize_state(denormalized_state)
@@ -70,9 +64,7 @@ class TestMatrixQuantumCircuitInitialization:
     @pytest.mark.parametrize(
         "invalid_length_state", [np.array([1]), np.array([1, 1, 1]) / np.sqrt(3)]
     )
-    def test_initialize_state_raises_error_for_non_power_of_2_length(
-        self, invalid_length_state
-    ):
+    def test_initialize_state_raises_error_for_non_power_of_2_length(self, invalid_length_state):
         """
         Test that initializing with a state whose length is not a power of 2
         raises a ValueError.
@@ -220,9 +212,7 @@ class TestCXGate:
     def test_exception_when_control_and_target_qubit_same(self):
         """Test exception is thrown when control and target qubit are same"""
         qc = MatrixQuantumCircuit.initialize_num_qubits(2)
-        with pytest.raises(
-            ValueError, match="Control qubit cannot be the target qubit"
-        ):
+        with pytest.raises(ValueError, match="Control qubit cannot be the target qubit"):
             qc.cnot(0, 0)
 
     def test_control_qubit_disabled(self):
@@ -325,7 +315,7 @@ class TestCXGate:
         state_1111 = kron([ONE_STATE] * 4)
         qc = MatrixQuantumCircuit.initialize_state(state_1111)
 
-        qc.cnot(0, 1)
+        qc.cnot(2, 3)
 
         state_1110 = kron([ONE_STATE, ONE_STATE, ONE_STATE, ZERO_STATE])
         npt.assert_array_equal(qc.get_state(), state_1110)
