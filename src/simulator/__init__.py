@@ -1,5 +1,6 @@
 from simulator.quantum_circuit import (
     QuantumCircuit,
-    initialize_num_qubits,
-    initialize_state,
+    SimulatorType,
+    create_quantum_circuit_from_qubits,
+    create_quantum_circuit_from_state,
 )

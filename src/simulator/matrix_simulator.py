@@ -30,9 +30,6 @@ class MatrixSimulator(Simulator):
     def _apply_control_gate(
         self, gate: np.ndarray, control_qubit: int, target_qubit: int
     ):
-        if control_qubit == target_qubit:
-            raise ValueError("Control qubit cannot be the target qubit")
-
         # control qubit and target qubit are far away
         if control_qubit < target_qubit:
             # bring control qubit closer to target qubit using swap gates
