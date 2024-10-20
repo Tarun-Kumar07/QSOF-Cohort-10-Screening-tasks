@@ -46,15 +46,11 @@ class TestQuantumCircuitInitialization:
         self, simulator_type, num_qubits
     ):
         """Test that initializing with non-positive num_qubits raises a ValueError."""
-        with pytest.raises(
-            ValueError, match="num_qubits must be greater than or equal to 1."
-        ):
+        with pytest.raises(ValueError, match="num_qubits must be greater than or equal to 1."):
             create_quantum_circuit_from_qubits(simulator_type, num_qubits)
 
     @pytest.mark.parametrize("num_qubits", [1, 2])
-    def test_initialize_num_qubits_succeeds_for_positive_values(
-        self, simulator_type, num_qubits
-    ):
+    def test_initialize_num_qubits_succeeds_for_positive_values(self, simulator_type, num_qubits):
         """Test that initializing with positive num_qubits does not raise an exception."""
         try:
             create_quantum_circuit_from_qubits(simulator_type, num_qubits)
@@ -98,9 +94,7 @@ class TestQuantumCircuitInitialization:
             np.array([1, -1, 1, 1]) / 2,
         ],
     )
-    def test_initialize_state_succeeds_for_valid_states(
-        self, simulator_type, valid_state
-    ):
+    def test_initialize_state_succeeds_for_valid_states(self, simulator_type, valid_state):
         """Test that initializing with a valid state does not raise an exception."""
         try:
             create_quantum_circuit_from_state(simulator_type, valid_state)
@@ -111,6 +105,12 @@ class TestQuantumCircuitInitialization:
 @pytest.mark.parametrize("simulator_type", SIMULATOR_TYPES)
 class TestXGate:
     """Test Not gate"""
+
+    @pytest.mark.parametrize("qubit", [-1, 3])
+    def test_x_with_invalid_qubits_raises_error(self, simulator_type, qubit):
+        qc = create_quantum_circuit_from_qubits(simulator_type, 2)
+        with pytest.raises(ValueError, match="qubit must be in \[0, 1\]"):
+            qc.x(qubit)
 
     def test_x_0(self, simulator_type):
         """Test x|0> = |1>"""
@@ -173,6 +173,12 @@ class TestXGate:
 class TestHGate:
     """Test Hadamard gate"""
 
+    @pytest.mark.parametrize("qubit", [-1, 3])
+    def test_h_with_invalid_qubits_raises_error(self, simulator_type, qubit):
+        qc = create_quantum_circuit_from_qubits(simulator_type, 2)
+        with pytest.raises(ValueError, match="qubit must be in \[0, 1\]"):
+            qc.h(qubit)
+
     def test_h_0(self, simulator_type):
         """Test h|0> = |+>"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 1)
@@ -232,12 +238,17 @@ class TestHGate:
 class TestCXGate:
     """Test Controlled not gate"""
 
+    @pytest.mark.parametrize("target", [-2, 2])
+    @pytest.mark.parametrize("control", [-1, 3])
+    def test_h_with_invalid_qubits_raises_error(self, simulator_type, control, target):
+        qc = create_quantum_circuit_from_qubits(simulator_type, 2)
+        with pytest.raises(ValueError, match="qubit must be in \[0, 1\]"):
+            qc.cnot(control, target)
+
     def test_exception_when_control_and_target_qubit_same(self, simulator_type):
         """Test exception is thrown when control and target qubit are same"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
-        with pytest.raises(
-            ValueError, match="Control qubit cannot be the target qubit"
-        ):
+        with pytest.raises(ValueError, match="Control qubit cannot be the target qubit"):
             qc.cnot(0, 0)
 
     def test_control_qubit_disabled(self, simulator_type):
@@ -327,9 +338,7 @@ class TestCXGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
-        self, simulator_type
-    ):
+    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
         """Test
         |1⟩ ---------- |1⟩
 
@@ -365,9 +374,7 @@ class TestCXGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(
-        self, simulator_type
-    ):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(self, simulator_type):
         """Test
         |1⟩ ----X----- |0⟩
                 |
@@ -385,9 +392,7 @@ class TestCXGate:
         state_0111 = kron([ZERO_STATE, ONE_STATE, ONE_STATE, ONE_STATE])
         npt.assert_array_equal(qc.get_state(), state_0111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
-        self, simulator_type
-    ):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
         """Test
         |1⟩ ---------- |1⟩
 
