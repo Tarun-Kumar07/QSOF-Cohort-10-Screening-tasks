@@ -376,3 +376,18 @@ class TestCnotGate:
 
         state_01 = kron([ZERO_STATE, ONE_STATE])
         npt.assert_array_equal(qc.get_state(), state_01)
+
+
+@pytest.mark.parametrize("simulator_type", SIMULATOR_TYPES)
+def test_generate_GHZ_state(simulator_type):
+    """Test : Generate GHZ state"""
+    qc = create_quantum_circuit_from_qubits(simulator_type, 3)
+    qc.h(0)
+    qc.cnot(0, 1)
+    qc.cnot(1, 2)
+
+    ghz_state = np.zeros(8)
+    ghz_state[0] = 1 / np.sqrt(2)
+    ghz_state[-1] = 1 / np.sqrt(2)
+
+    npt.assert_array_equal(qc.get_state(), ghz_state)
