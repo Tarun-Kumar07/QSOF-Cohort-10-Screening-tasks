@@ -95,7 +95,9 @@ class Simulator(ABC):
         """
 
     @abstractmethod
-    def _apply_control_gate(self, gate: np.ndarray, control_qubit: int, target_qubit: int):
+    def _apply_control_gate(
+        self, gate: np.ndarray, control_qubit: int, target_qubit: int
+    ):
         """
         Abstract method to apply a controlled gate. Must be implemented
         by subclasses.

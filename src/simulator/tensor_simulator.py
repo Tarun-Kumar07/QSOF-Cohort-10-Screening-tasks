@@ -24,9 +24,13 @@ class TensorSimulator(Simulator):
         next_state = np.tensordot(gate, self.state, (1, qubit))
         self.state = np.moveaxis(next_state, 0, qubit)
 
-    def _apply_control_gate(self, gate: np.ndarray, control_qubit: int, target_qubit: int):
+    def _apply_control_gate(
+        self, gate: np.ndarray, control_qubit: int, target_qubit: int
+    ):
         gate_tensor = gate.reshape(2, 2, 2, 2)
-        next_state = np.tensordot(gate_tensor, self.state, ((2, 3), (control_qubit, target_qubit)))
+        next_state = np.tensordot(
+            gate_tensor, self.state, ((2, 3), (control_qubit, target_qubit))
+        )
         self.state = np.moveaxis(next_state, (0, 1), (control_qubit, target_qubit))
 
     def get_state(self) -> np.ndarray:
