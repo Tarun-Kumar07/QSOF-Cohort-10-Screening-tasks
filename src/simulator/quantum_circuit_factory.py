@@ -37,7 +37,7 @@ def zero_state(num_qubits: int) -> np.ndarray:
 
     if num_qubits < 1:
         raise ValueError("num_qubits must be greater than or equal to 1.")
-    state = np.zeros(2**num_qubits)
+    state = np.zeros(2**num_qubits, dtype=np.complex128)
     state[0] = 1
     return state
 

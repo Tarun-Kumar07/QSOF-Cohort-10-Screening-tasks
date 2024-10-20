@@ -31,11 +31,12 @@ class QuantumCircuit(ABC):
     Supports basic quantum gate operations such as H, X, and CNOT
     """
 
-    def __init__(self, simulator: Simulator):
+    def __init__(self, simulator: Simulator, name: str = None):
         """
         Initializes quantum circuit, with simulator to apply gates.
         """
         self.simulator = simulator
+        self.name = name
 
     def get_state(self) -> np.ndarray:
         """

@@ -173,7 +173,9 @@ class TestCnotGate:
 
     @pytest.mark.parametrize("target", [-2, 2])
     @pytest.mark.parametrize("control", [-1, 3])
-    def test_cnot_with_invalid_qubits_raises_error(self, simulator_type, control, target):
+    def test_cnot_with_invalid_qubits_raises_error(
+        self, simulator_type, control, target
+    ):
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         with pytest.raises(ValueError, match=r"qubit must be in \[0, 1\]"):
             qc.cnot(control, target)
@@ -181,7 +183,9 @@ class TestCnotGate:
     def test_exception_when_control_and_target_qubit_same(self, simulator_type):
         """Test exception is thrown when control and target qubit are same"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
-        with pytest.raises(ValueError, match="Control qubit cannot be the target qubit"):
+        with pytest.raises(
+            ValueError, match="Control qubit cannot be the target qubit"
+        ):
             qc.cnot(0, 0)
 
     def test_control_qubit_disabled(self, simulator_type):
@@ -271,7 +275,9 @@ class TestCnotGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
+    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
+        self, simulator_type
+    ):
         """Test
         |1⟩ ---------- |1⟩
 
@@ -307,7 +313,9 @@ class TestCnotGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(self, simulator_type):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(
+        self, simulator_type
+    ):
         """Test
         |1⟩ ----X----- |0⟩
                 |
@@ -325,7 +333,9 @@ class TestCnotGate:
         state_0111 = kron([ZERO_STATE, ONE_STATE, ONE_STATE, ONE_STATE])
         npt.assert_array_equal(qc.get_state(), state_0111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
+        self, simulator_type
+    ):
         """Test
         |1⟩ ---------- |1⟩
 
