@@ -7,7 +7,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit_aer import StatevectorSimulator
 
-from simulator import create_quantum_circuit_from_qubits, SimulatorType
+from simulator import SimulatorType, create_quantum_circuit_from_qubits
 
 DATASET_FILE_PATH = "./data/dataset.csv"
 REPORT_FILE_PATH = "./data/report.csv"
@@ -33,7 +33,9 @@ def time_execution(func: Callable) -> Callable:
 
 
 @time_execution
-def run_quantum_circuit(simulator_type: SimulatorType, num_qubits: int, circuit) -> np.ndarray:
+def run_quantum_circuit(
+    simulator_type: SimulatorType, num_qubits: int, circuit
+) -> np.ndarray:
     qc = create_quantum_circuit_from_qubits(simulator_type, num_qubits)
     for gate, qubits in circuit:
         if gate == "H":
@@ -57,7 +59,9 @@ def run_qiskit_circuit(num_qubits: int, circuit) -> np.ndarray:
         elif gate == "CNOT":
             qc.cx(qubits[0], qubits[1])
 
-    qc = qc.reverse_bits()  # Qiskit orders qubits in different way (TODO : Mention details)
+    # Qiskit orders qubits in little endian way, and the simulator has been designed in big endian fashion
+    # So flipping the orders to convert qiskit circuit to big endian notation
+    qc = qc.reverse_bits()
 
     result = QISKIT_STATE_VECTOR_SIMULATOR.run(qc).result()
     state_vector = np.asarray(result.get_statevector(qc))

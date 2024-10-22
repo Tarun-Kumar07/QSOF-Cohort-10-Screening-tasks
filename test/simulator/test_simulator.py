@@ -173,9 +173,7 @@ class TestCnotGate:
 
     @pytest.mark.parametrize("target", [-2, 2])
     @pytest.mark.parametrize("control", [-1, 3])
-    def test_cnot_with_invalid_qubits_raises_error(
-        self, simulator_type, control, target
-    ):
+    def test_cnot_with_invalid_qubits_raises_error(self, simulator_type, control, target):
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         with pytest.raises(ValueError, match=r"qubit must be in \[0, 1\]"):
             qc.cnot(control, target)
@@ -183,9 +181,7 @@ class TestCnotGate:
     def test_exception_when_control_and_target_qubit_same(self, simulator_type):
         """Test exception is thrown when control and target qubit are same"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
-        with pytest.raises(
-            ValueError, match="Control qubit cannot be the target qubit"
-        ):
+        with pytest.raises(ValueError, match="Control qubit cannot be the target qubit"):
             qc.cnot(0, 0)
 
     def test_control_qubit_disabled(self, simulator_type):
@@ -275,9 +271,7 @@ class TestCnotGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
-        self, simulator_type
-    ):
+    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
         """Test
         |1⟩ ---------- |1⟩
 
@@ -313,9 +307,7 @@ class TestCnotGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(
-        self, simulator_type
-    ):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(self, simulator_type):
         """Test
         |1⟩ ----X----- |0⟩
                 |
@@ -333,9 +325,7 @@ class TestCnotGate:
         state_0111 = kron([ZERO_STATE, ONE_STATE, ONE_STATE, ONE_STATE])
         npt.assert_array_equal(qc.get_state(), state_0111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
-        self, simulator_type
-    ):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
         """Test
         |1⟩ ---------- |1⟩
 
@@ -401,3 +391,29 @@ def test_generate_GHZ_state(simulator_type):
     ghz_state[-1] = 1 / np.sqrt(2)
 
     npt.assert_array_equal(qc.get_state(), ghz_state)
+
+
+class TestSampling:
+    @pytest.mark.parametrize("simulator_type", SIMULATOR_TYPES)
+    def test_sampling(self, simulator_type):
+        """This is smoke test to check that sampling is working"""
+        qc = create_quantum_circuit_from_qubits(simulator_type, 2)
+        qc.h(0)
+        qc.h(1)
+
+        np.random.seed(42)
+        samples = qc.sample(1000)
+
+        expected = {"00": 269, "01": 234, "10": 254, "11": 243}
+        assert expected == samples
+
+    def test_sampling_with_negative_values(self):
+        """Sampling with negative values must raise an exception"""
+        qc = create_quantum_circuit_from_qubits(SimulatorType.MATRIX, 2)
+        qc.h(0)
+        qc.h(1)
+
+        np.random.seed(42)
+
+        with pytest.raises(ValueError, match="Sample count cannot be negative"):
+            qc.sample(-1000)

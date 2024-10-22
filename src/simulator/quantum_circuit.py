@@ -6,6 +6,7 @@ Pauli-X, and controlled-NOT (CNOT) gates.
 """
 
 from abc import ABC
+from typing import Dict
 
 import numpy as np
 
@@ -64,3 +65,24 @@ class QuantumCircuit(ABC):
             raise ValueError("Control qubit cannot be the target qubit")
 
         self.simulator.apply_control_gate(CNOT, control_qubit, target_qubit)
+
+    def sample(self, sample_count: int) -> Dict[str, int]:
+        if sample_count < 0:
+            raise ValueError("Sample count cannot be negative")
+
+        state_vector = self.get_state()
+        probs = np.abs(state_vector) ** 2
+
+        num_qubits = self.simulator.num_qubits
+        possible_states = np.arange(2**num_qubits)
+        possible_bit_strings = [format(state, f"0{num_qubits}b") for state in possible_states]
+
+        sampled_states = np.random.choice(possible_bit_strings, size=sample_count, p=probs)
+
+        samples = {}
+        for state in sampled_states:
+            samples[state] = samples.get(state, 0) + 1
+
+        return samples
+
+    # def expectation(self, pauli_word: Dict[int, str]) -> np.ndarray:
