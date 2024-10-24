@@ -14,10 +14,10 @@ The answers to these questions are explained in detail below, followed by an ove
 - The state of qubits is represented as vectors, and there are two main conventions for ordering qubits:
     - **Little-endian**
       - The least significant qubit is considered the first qubit.
-      - For example, $ \ket{6} = \ket{110} $.
+      - For example, $\ket{6} = \ket{110}$.
     - **Big-endian**
       - The most significant qubit is considered the first qubit.
-      - For example, $ \ket{6} = \ket{011} $.
+      - For example, $\ket{6} = \ket{011}$.
 
 - I chose to represent qubits using the little-endian convention because it aligns with how numbers are typically converted to binary strings.
 - Additionally, Qiskit uses this same convention, making verification easier.
