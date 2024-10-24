@@ -21,17 +21,26 @@ class TensorSimulator(Simulator):
         self.state = state.reshape(new_shape)
 
     def _apply_single_gate(self, gate: np.ndarray, qubit: int):
-        next_state = np.tensordot(gate, self.state, (1, qubit))
-        self.state = np.moveaxis(next_state, 0, qubit)
+        big_endian_qubit_index = self.convert_to_big_endian_qubit(qubit)
+        next_state = np.tensordot(gate, self.state, (1, big_endian_qubit_index))
+        self.state = np.moveaxis(next_state, 0, big_endian_qubit_index)
 
     def _apply_control_gate(
         self, gate: np.ndarray, control_qubit: int, target_qubit: int
     ):
         gate_tensor = gate.reshape(2, 2, 2, 2)
+        big_endian_control = self.convert_to_big_endian_qubit(control_qubit)
+        big_endian_target = self.convert_to_big_endian_qubit(target_qubit)
         next_state = np.tensordot(
-            gate_tensor, self.state, ((2, 3), (control_qubit, target_qubit))
+            gate_tensor, self.state, ((2, 3), (big_endian_target, big_endian_control))
         )
-        self.state = np.moveaxis(next_state, (0, 1), (control_qubit, target_qubit))
+        self.state = np.moveaxis(
+            next_state, (0, 1), (big_endian_target, big_endian_control)
+        )
+
+    def convert_to_big_endian_qubit(self, qubit):
+        """This is required as tensor product article assumed qubits to be in big endian order."""
+        return self.num_qubits - qubit - 1
 
     def get_state(self) -> np.ndarray:
         """

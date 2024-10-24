@@ -23,7 +23,7 @@ class MatrixSimulator(Simulator):
         unitary = np.eye(1)
         for q in range(self.num_qubits):
             q_gate = gate if q == qubit else I
-            unitary = np.kron(unitary, q_gate)
+            unitary = np.kron(q_gate, unitary)
 
         self.state = np.dot(unitary, self.state)
 
@@ -84,14 +84,14 @@ class MatrixSimulator(Simulator):
         unitary = np.eye(1)  # Start with a scalar identity
         for q in range(self.num_qubits):
             if q == qubit:
-                # Apply the SWAP gate matrix between the two neighboring qubits
-                unitary = np.kron(unitary, gate)
+                # Apply the gate matrix between the two neighboring qubits
+                unitary = np.kron(gate, unitary)
             elif q == qubit + 1:
                 # Skip the next qubit since gate already covered it
                 continue
             else:
                 # For all other qubits, apply the identity matrix
-                unitary = np.kron(unitary, I)
+                unitary = np.kron(I, unitary)
 
         # Apply the constructed gate to the state vector
         self.state = np.dot(unitary, self.state)

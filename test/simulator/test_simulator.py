@@ -76,24 +76,36 @@ class TestXGate:
         npt.assert_array_equal(qc.get_state(), expected_state)
 
     def test_x_00(self, simulator_type):
-        """Test IX |00> = |01>"""
+        """Test |00> => |10>
+        |0⟩ --------- |0⟩
+
+        |0⟩ ----X---- |1⟩
+        """
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         qc.x(1)
 
-        state_01 = np.kron(ZERO_STATE, ONE_STATE)
-        npt.assert_array_equal(qc.get_state(), state_01)
+        state_10 = np.kron(ONE_STATE, ZERO_STATE)
+        npt.assert_array_equal(qc.get_state(), state_10)
 
     def test_x_10(self, simulator_type):
-        """Test IX |10> = |11>"""
-        state_10 = np.kron(ONE_STATE, ZERO_STATE)
-        qc = create_quantum_circuit_from_state(simulator_type, state_10)
+        """Test |01> => |11>
+        |1⟩ --------- |1⟩
+
+        |0⟩ ----X---- |1⟩
+        """
+        state_01 = np.kron(ZERO_STATE, ONE_STATE)
+        qc = create_quantum_circuit_from_state(simulator_type, state_01)
         qc.x(1)
 
         state_11 = np.kron(ONE_STATE, ONE_STATE)
         npt.assert_array_equal(qc.get_state(), state_11)
 
     def test_multiple_x_gate(self, simulator_type):
-        """Test XX |00> = |11>"""
+        """Test |00> => |11>
+        |0⟩ --------- |1⟩
+
+        |0⟩ ----X---- |1⟩
+        """
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         qc.x(0)
         qc.x(1)
@@ -113,14 +125,14 @@ class TestHGate:
             qc.h(qubit)
 
     def test_h_0(self, simulator_type):
-        """Test h|0> = |+>"""
+        """Test H|0> = |+>"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 1)
         qc.h(0)
 
         npt.assert_array_equal(qc.get_state(), PLUS_STATE)
 
     def test_h_1(self, simulator_type):
-        """Test x|1> = |->"""
+        """Test H|1> = |->"""
         qc = create_quantum_circuit_from_state(simulator_type, ONE_STATE)
         qc.h(0)
 
@@ -141,24 +153,36 @@ class TestHGate:
         npt.assert_array_almost_equal(qc.get_state(), ONE_STATE)
 
     def test_h_00(self, simulator_type):
-        """Test IH |00> = |0+>"""
+        """Test |00> => |+0>
+        |0⟩ --------- |0⟩
+
+        |0⟩ ----H---- |+⟩
+        """
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         qc.h(1)
 
-        state_0plus = np.kron(ZERO_STATE, PLUS_STATE)
-        npt.assert_array_equal(qc.get_state(), state_0plus)
+        state_plus0 = np.kron(PLUS_STATE, ZERO_STATE)
+        npt.assert_array_equal(qc.get_state(), state_plus0)
 
     def test_h_10(self, simulator_type):
-        """Test IH |10> = |1+>"""
-        state_10 = np.kron(ONE_STATE, ZERO_STATE)
-        qc = create_quantum_circuit_from_state(simulator_type, state_10)
+        """Test |01> => |+1>
+        |1⟩ --------- |1⟩
+
+        |0⟩ ----H---- |+⟩
+        """
+        state_01 = np.kron(ZERO_STATE, ONE_STATE)
+        qc = create_quantum_circuit_from_state(simulator_type, state_01)
         qc.h(1)
 
-        state_1plus = np.kron(ONE_STATE, PLUS_STATE)
-        npt.assert_array_equal(qc.get_state(), state_1plus)
+        state_plus1 = np.kron(PLUS_STATE, ONE_STATE)
+        npt.assert_array_equal(qc.get_state(), state_plus1)
 
     def test_multiple_h_gate(self, simulator_type):
-        """Test HH |00> = |++>"""
+        """Test |00> => |++>
+        |0⟩ ----H---- |+⟩
+
+        |0⟩ ----H---- |+⟩
+        """
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         qc.h(0)
         qc.h(1)
@@ -173,7 +197,9 @@ class TestCnotGate:
 
     @pytest.mark.parametrize("target", [-2, 2])
     @pytest.mark.parametrize("control", [-1, 3])
-    def test_cnot_with_invalid_qubits_raises_error(self, simulator_type, control, target):
+    def test_cnot_with_invalid_qubits_raises_error(
+        self, simulator_type, control, target
+    ):
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         with pytest.raises(ValueError, match=r"qubit must be in \[0, 1\]"):
             qc.cnot(control, target)
@@ -181,7 +207,9 @@ class TestCnotGate:
     def test_exception_when_control_and_target_qubit_same(self, simulator_type):
         """Test exception is thrown when control and target qubit are same"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
-        with pytest.raises(ValueError, match="Control qubit cannot be the target qubit"):
+        with pytest.raises(
+            ValueError, match="Control qubit cannot be the target qubit"
+        ):
             qc.cnot(0, 0)
 
     def test_control_qubit_disabled(self, simulator_type):
@@ -197,64 +225,77 @@ class TestCnotGate:
         state_00 = np.kron(ZERO_STATE, ZERO_STATE)
         npt.assert_array_equal(qc.get_state(), state_00)
 
-    def test_cx_with_minimum_qubits(self, simulator_type):
-        """Test
+    def test_cx_with_11(self, simulator_type):
+        """Test |11> => |01>
+        |1⟩ ----●---- |1⟩
+                |
+        |1⟩ ----X---- |0⟩
+        """
+        state_11 = np.kron(ONE_STATE, ONE_STATE)
+        qc = create_quantum_circuit_from_state(simulator_type, state_11)
+        qc.cnot(0, 1)
+
+        state_01 = np.kron(ZERO_STATE, ONE_STATE)
+        npt.assert_array_equal(qc.get_state(), state_01)
+
+    def test_cx_with_01(self, simulator_type):
+        """Test |01> => |11>
         |1⟩ ----●---- |1⟩
                 |
         |0⟩ ----X---- |1⟩
         """
-        state_10 = np.kron(ONE_STATE, ZERO_STATE)
-        qc = create_quantum_circuit_from_state(simulator_type, state_10)
+        state_01 = np.kron(ZERO_STATE, ONE_STATE)
+        qc = create_quantum_circuit_from_state(simulator_type, state_01)
         qc.cnot(0, 1)
 
         state_11 = np.kron(ONE_STATE, ONE_STATE)
         npt.assert_array_equal(qc.get_state(), state_11)
 
     def test_reverse_cx_with_minimum_qubits(self, simulator_type):
-        """Test
+        """Test |10> => |11>
         |0⟩ ----X---- |1⟩
                 |
         |1⟩ ----●---- |1⟩
         """
-        state_01 = np.kron(ZERO_STATE, ONE_STATE)
-        qc = create_quantum_circuit_from_state(simulator_type, state_01)
+        state_10 = np.kron(ONE_STATE, ZERO_STATE)
+        qc = create_quantum_circuit_from_state(simulator_type, state_10)
         qc.cnot(1, 0)
 
         state_11 = np.kron(ONE_STATE, ONE_STATE)
         npt.assert_array_equal(qc.get_state(), state_11)
 
     def test_cx_with_far_qubits(self, simulator_type):
-        """Test
+        """Test |001> => |101>
         |1⟩ ----●---- |1⟩
                 |
         |0⟩ --------- |0⟩
                 |
         |0⟩ ----X---- |1⟩
         """
-        state_100 = kron([ONE_STATE, ZERO_STATE, ZERO_STATE])
-        qc = create_quantum_circuit_from_state(simulator_type, state_100)
+        state_001 = kron([ZERO_STATE, ZERO_STATE, ONE_STATE])
+        qc = create_quantum_circuit_from_state(simulator_type, state_001)
         qc.cnot(0, 2)
 
         state_101 = kron([ONE_STATE, ZERO_STATE, ONE_STATE])
         npt.assert_array_equal(qc.get_state(), state_101)
 
     def test_reverse_cx_with_far_qubits(self, simulator_type):
-        """Test
+        """Test |100> => |101>
         |0⟩ ----X---- |1⟩
                 |
         |0⟩ --------- |0⟩
                 |
         |1⟩ ----●---- |1⟩
         """
-        state_001 = kron([ZERO_STATE, ZERO_STATE, ONE_STATE])
-        qc = create_quantum_circuit_from_state(simulator_type, state_001)
+        state_100 = kron([ONE_STATE, ZERO_STATE, ZERO_STATE])
+        qc = create_quantum_circuit_from_state(simulator_type, state_100)
         qc.cnot(2, 0)
 
         state_101 = kron([ONE_STATE, ZERO_STATE, ONE_STATE])
         npt.assert_array_equal(qc.get_state(), state_101)
 
     def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(self, simulator_type):
-        """Test
+        """Test |1101> => |1111>
         |1⟩ ----●----- |1⟩
                 |
         |0⟩ ----X----- |1⟩
@@ -263,16 +304,18 @@ class TestCnotGate:
 
         |1⟩ ---------- |1⟩
         """
-        state_1011 = kron([ONE_STATE, ZERO_STATE, ONE_STATE, ONE_STATE])
-        qc = create_quantum_circuit_from_state(simulator_type, state_1011)
+        state_1101 = kron([ONE_STATE, ONE_STATE, ZERO_STATE, ONE_STATE])
+        qc = create_quantum_circuit_from_state(simulator_type, state_1101)
 
         qc.cnot(0, 1)
 
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
-        """Test
+    def test_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
+        self, simulator_type
+    ):
+        """Test |111> => |0111>
         |1⟩ ---------- |1⟩
 
         |1⟩ ---------- |1⟩
@@ -286,11 +329,11 @@ class TestCnotGate:
 
         qc.cnot(2, 3)
 
-        state_1110 = kron([ONE_STATE, ONE_STATE, ONE_STATE, ZERO_STATE])
-        npt.assert_array_equal(qc.get_state(), state_1110)
+        state_0111 = kron([ZERO_STATE, ONE_STATE, ONE_STATE, ONE_STATE])
+        npt.assert_array_equal(qc.get_state(), state_0111)
 
     def test_cx_with_neighbouring_qubits_at_center(self, simulator_type):
-        """Test
+        """Test |1011> => |1111>
         |1⟩ ---------- |1⟩
 
         |1⟩ ----●----- |1⟩
@@ -299,7 +342,7 @@ class TestCnotGate:
 
         |1⟩ ---------- |1⟩
         """
-        state_1101 = kron([ONE_STATE, ONE_STATE, ZERO_STATE, ONE_STATE])
+        state_1101 = kron([ONE_STATE, ZERO_STATE, ONE_STATE, ONE_STATE])
         qc = create_quantum_circuit_from_state(simulator_type, state_1101)
 
         qc.cnot(1, 2)
@@ -307,7 +350,9 @@ class TestCnotGate:
         state_1111 = kron([ONE_STATE] * 4)
         npt.assert_array_equal(qc.get_state(), state_1111)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(self, simulator_type):
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_end(
+        self, simulator_type
+    ):
         """Test
         |1⟩ ----X----- |0⟩
                 |
@@ -322,11 +367,13 @@ class TestCnotGate:
 
         qc.cnot(1, 0)
 
-        state_0111 = kron([ZERO_STATE, ONE_STATE, ONE_STATE, ONE_STATE])
-        npt.assert_array_equal(qc.get_state(), state_0111)
+        state_1110 = kron([ONE_STATE, ONE_STATE, ONE_STATE, ZERO_STATE])
+        npt.assert_array_equal(qc.get_state(), state_1110)
 
-    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(self, simulator_type):
-        """Test
+    def test_reverse_cx_with_neighbouring_qubits_and_ideal_qubits_at_begining(
+        self, simulator_type
+    ):
+        """Test |1111> => |1011>
         |1⟩ ---------- |1⟩
 
         |1⟩ ---------- |1⟩
@@ -340,11 +387,11 @@ class TestCnotGate:
 
         qc.cnot(3, 2)
 
-        state_1101 = kron([ONE_STATE, ONE_STATE, ZERO_STATE, ONE_STATE])
-        npt.assert_array_equal(qc.get_state(), state_1101)
+        state_1011 = kron([ONE_STATE, ZERO_STATE, ONE_STATE, ONE_STATE])
+        npt.assert_array_equal(qc.get_state(), state_1011)
 
     def test_reverse_cx_with_neighbouring_qubits_at_center(self, simulator_type):
-        """Test
+        """Test |1111> => |1101>
         |1⟩ ---------- |1⟩
 
         |1⟩ ----X----- |0⟩
@@ -358,8 +405,8 @@ class TestCnotGate:
 
         qc.cnot(2, 1)
 
-        state_1011 = kron([ONE_STATE, ZERO_STATE, ONE_STATE, ONE_STATE])
-        npt.assert_array_equal(qc.get_state(), state_1011)
+        state_1101 = kron([ONE_STATE, ONE_STATE, ZERO_STATE, ONE_STATE])
+        npt.assert_array_equal(qc.get_state(), state_1101)
 
     def test_multiple_cnot_gates(self, simulator_type):
         """Test : Create Swap gate using CNOT
@@ -394,8 +441,9 @@ def test_generate_GHZ_state(simulator_type):
 
 
 class TestSampling:
+
     @pytest.mark.parametrize("simulator_type", SIMULATOR_TYPES)
-    def test_sampling(self, simulator_type):
+    def test_sampling_with_uniform_superposition(self, simulator_type):
         """This is smoke test to check that sampling is working"""
         qc = create_quantum_circuit_from_qubits(simulator_type, 2)
         qc.h(0)
@@ -405,6 +453,23 @@ class TestSampling:
         samples = qc.sample(1000)
 
         expected = {"00": 269, "01": 234, "10": 254, "11": 243}
+        assert expected == samples
+
+    @pytest.mark.parametrize("simulator_type", SIMULATOR_TYPES)
+    def test_sampling_with_10_state(self, simulator_type):
+        """Test |00> => |10>
+        |0⟩ --------- |0⟩
+
+        |0⟩ ----X---- |1⟩
+        """
+        qc = create_quantum_circuit_from_qubits(simulator_type, 2)
+
+        qc.x(1)
+
+        np.random.seed(42)
+        samples = qc.sample(1000)
+
+        expected = {"10": 1000}
         assert expected == samples
 
     def test_sampling_with_negative_values(self):

@@ -23,7 +23,7 @@ X = np.array([[0, 1], [1, 0]])
                |
  |target⟩  ----X----
 """
-CNOT = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
+CNOT = np.array([[1, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0]])
 
 
 class QuantumCircuit(ABC):
@@ -75,9 +75,13 @@ class QuantumCircuit(ABC):
 
         num_qubits = self.simulator.num_qubits
         possible_states = np.arange(2**num_qubits)
-        possible_bit_strings = [format(state, f"0{num_qubits}b") for state in possible_states]
+        possible_bit_strings = [
+            format(state, f"0{num_qubits}b") for state in possible_states
+        ]
 
-        sampled_states = np.random.choice(possible_bit_strings, size=sample_count, p=probs)
+        sampled_states = np.random.choice(
+            possible_bit_strings, size=sample_count, p=probs
+        )
 
         samples = {}
         for state in sampled_states:

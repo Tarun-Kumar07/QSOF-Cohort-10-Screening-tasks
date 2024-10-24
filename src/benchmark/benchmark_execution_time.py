@@ -59,10 +59,6 @@ def run_qiskit_circuit(num_qubits: int, circuit) -> np.ndarray:
         elif gate == "CNOT":
             qc.cx(qubits[0], qubits[1])
 
-    # Qiskit orders qubits in little endian way, and the simulator has been designed in big endian fashion
-    # So flipping the orders to convert qiskit circuit to big endian notation
-    qc = qc.reverse_bits()
-
     result = QISKIT_STATE_VECTOR_SIMULATOR.run(qc).result()
     state_vector = np.asarray(result.get_statevector(qc))
 
