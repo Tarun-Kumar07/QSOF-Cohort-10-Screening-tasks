@@ -58,3 +58,10 @@ Below, each question is addressed in detail, followed by an overview of the **co
    ![alt text](./src/benchmark/data/plots/pauli_observable.png)
 
 ## Code walk through
+
+
+---
+### References
+1. [Introduction to Tensors Quantum Circuit Simulation](https://medium.com/mdr-inc/introduction-to-tensors-quantum-circuit-simulation-220721c68307)
+2. [Quantum circuits in Python using nothing but Numpy](https://www.kattemolle.com/other/QCinPY.html)
+3. [CX gate](https://kawaihome.link/jbooks/qcomp-short/q2gates/cx.html#id1)
