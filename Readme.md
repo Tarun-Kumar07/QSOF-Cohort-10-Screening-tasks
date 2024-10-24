@@ -48,3 +48,13 @@ Below, each question is addressed in detail, followed by an overview of the **co
 ---
 
 ## Q3. Bonus questions...
+### Sampling
+- Sampling is done by generating probability distribution from the state of quantum circuit.
+- Using the probability distribution samples are generated according to the number of count provided.
+
+### Expectation value
+- The expectation value of an observable `Ob` for give $\Psi$ is $\bra{\Psi}Ob\ket{Psi}$
+- Observables can be expressed using pauli basis. For example, the pauli word `{0:"X", 2:"Y"}` represents <br>
+   ![alt text](./src/benchmark/data/plots/pauli_observable.png)
+
+## Code walk through
