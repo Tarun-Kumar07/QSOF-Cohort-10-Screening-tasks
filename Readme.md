@@ -46,18 +46,27 @@ Below, each question is addressed in detail, followed by an overview of the **co
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_8.png" alt="Alt Text" width="500" height="300">
 
 ---
+## Code design
+- The [QuantumCircuit](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit.py#L31) class defines how various operations and gates are applied to a quantum circuit. It uses a [Simulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26) to perform gate operations.
+- The [Simulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26) class contains the logic for transitioning between quantum states. It also performs validations before applying any gates.
+- Gate applications are handled by two subclasses of [Simulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26):
+  - [MatrixSimulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/matrix_simulator.py#L16): Uses matrix multiplication for gate operations.
+  - [TensorSimulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/tensor_simulator.py#L12): Uses tensor multiplication for gate operations.
+- [Factory methods](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit_factory.py) are provided for creating quantum circuits.
+- In addition to the source code, unit tests have been written to ensure accurate functionality, with a **test coverage of 98%**.
+
 
 ## Q3. Bonus questions...
 ### Sampling
 - Sampling is done by generating probability distribution from the state of quantum circuit.
 - Using the probability distribution samples are generated according to the number of count provided.
+- You can find the implementation [here](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/fe991520d7e241d41397169cf7aa14fab4e50cac/src/simulator/quantum_circuit.py#L87), and for usage instructions, please refer to this [test](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/fe991520d7e241d41397169cf7aa14fab4e50cac/test/simulator/test_measurement.py#L12).
 
 ### Expectation value
 - The expectation value of an observable `Ob` for give $\Psi$ is $\bra{\Psi}Ob\ket{\Psi}$
 - Observables can be expressed using pauli basis. For example, the pauli word `{0:"X", 2:"Y"}` represents <br>
    ![alt text](./src/benchmark/data/plots/pauli_observable.png)
-
-## Code walk through
+- You can find the implementation [here](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/fe991520d7e241d41397169cf7aa14fab4e50cac/src/simulator/quantum_circuit.py#L108), and for usage instructions, please refer to this [test](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/fe991520d7e241d41397169cf7aa14fab4e50cac/test/simulator/test_measurement.py#L56).  
 
 
 ---
