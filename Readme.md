@@ -34,9 +34,9 @@ Below, each question is addressed in detail, followed by an overview of the **co
 - #### Tensor-based Simulator
   - The number of multiplications in a tensor product equals the total number of elements in both tensors.
   - In this scenario, the X gate is a (2x2) tensor, and the qubit state has dimensions (2, 2, ..., repeated _m_ times).
-  - The computational complexity of the multiplications will be _O(4 * 2^m)_, which simplifies to _O(2^m)_.
+  - The computational complexity of the multiplications will be $O(4 * 2^m)$, which simplifies to $O(2^m)$.
 
-- _Thus, we significantly improved the time complexity from O(2^{3m}) to O(2^m),_ demonstrating why the tensor-based approach is more efficient.
+- Thus, we significantly improved the time complexity from $O(2^{3m})$ to $O(2^m)$, demonstrating why the tensor-based approach is more efficient.
 
 ### Experiment results
 - With a **time limit of 80 seconds** and a **circuit depth of 10**, the **matrix simulator** could simulate **14 qubits**, while the **tensor simulator** achieved **29 qubits**. This shows an **almost twofold speedup**.
