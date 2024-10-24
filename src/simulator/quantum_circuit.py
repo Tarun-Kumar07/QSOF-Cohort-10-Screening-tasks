@@ -1,8 +1,6 @@
 """
-This module provides a basic framework for creating quantum circuits and
-applying quantum gate operations using a simulator. It supports methods
-to initialize circuits and perform operations such as Hadamard (H),
-Pauli-X, and controlled-NOT (CNOT) gates.
+This module provides a basic framework for manipulating quantum circuits
+using gate operations and measurements.
 """
 
 from abc import ABC
@@ -26,18 +24,14 @@ Z = np.array([[1, 0], [0, -1]])
 
 PAULIS = ["X", "Y", "Z"]
 
-""" 
- |control⟩ ----●---- 
-               |
- |target⟩  ----X----
-"""
+# CNOT gate according to little endian notation
 CNOT = np.array([[1, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0]])
 
 
 class QuantumCircuit(ABC):
     """
     A quantum circuit representation that uses simulator to apply gates.
-    Supports basic quantum gate operations such as H, X, and CNOT
+    Supports basic quantum gate operations such as H, X, Y, Z and CNOT
     """
 
     def __init__(self, simulator: Simulator, name: str = None):
@@ -87,13 +81,11 @@ class QuantumCircuit(ABC):
         """
         Apply a controlled-NOT (CNOT) gate between two qubits.
         """
-        if control_qubit == target_qubit:
-            raise ValueError("Control qubit cannot be the target qubit")
-
         self.simulator.apply_control_gate(CNOT, control_qubit, target_qubit)
 
 
 def sample(qc: QuantumCircuit, sample_count: int) -> Dict[str, int]:
+    """Generates count dictionary of samples from probability distribution of the quantum circuit."""
     if sample_count < 0:
         raise ValueError("Sample count cannot be negative")
 
@@ -102,9 +94,7 @@ def sample(qc: QuantumCircuit, sample_count: int) -> Dict[str, int]:
 
     num_qubits = qc.get_num_qubits()
     possible_states = np.arange(2**num_qubits)
-    possible_bit_strings = [
-        format(state, f"0{num_qubits}b") for state in possible_states
-    ]
+    possible_bit_strings = [format(state, f"0{num_qubits}b") for state in possible_states]
 
     sampled_states = np.random.choice(possible_bit_strings, size=sample_count, p=probs)
 
@@ -116,6 +106,11 @@ def sample(qc: QuantumCircuit, sample_count: int) -> Dict[str, int]:
 
 
 def expectation(qc: QuantumCircuit, pauli_word: Dict[int, str]) -> float:
+    """
+    Computes the expectation value of the quantum circuit for a given pauli_word.
+    Note that this method mutates the state of quantum circuit as well.
+    """
+
     state_before_applying_observables = qc.get_state()
     for qubit, pauli in pauli_word.items():
         if pauli == "X":
@@ -125,9 +120,7 @@ def expectation(qc: QuantumCircuit, pauli_word: Dict[int, str]) -> float:
         elif pauli == "Z":
             qc.z(qubit)
         else:
-            raise ValueError(
-                f"For qubit {qubit}, '{pauli}' is not one of pauli observables"
-            )
+            raise ValueError(f"For qubit {qubit}, '{pauli}' is not one of pauli observables")
 
     exp = np.dot(state_before_applying_observables, qc.get_state())
 

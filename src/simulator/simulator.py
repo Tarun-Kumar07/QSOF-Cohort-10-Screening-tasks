@@ -28,18 +28,12 @@ class Simulator(ABC):
     Abstract base class for a quantum simulator.
 
     Provides methods for simulating quantum states and applying quantum gates.
-
-    Attributes:
-        state (np.ndarray): The current quantum state vector.
-        num_qubits (int): The number of qubits in the system.
+    This class contains logic for validating state and qubit indices to apply gates
     """
 
     def __init__(self, state: np.ndarray):
         """
         Initialize the simulator with the given quantum state.
-
-        Parameters:
-            state (np.ndarray): The initial state vector.
         """
         validate_state(state)
 
@@ -54,26 +48,21 @@ class Simulator(ABC):
 
     def apply_single_gate(self, gate: np.ndarray, qubit: int):
         """
-        Apply a single-qubit gate.
-
-        Parameters:
-            gate (np.ndarray): The gate matrix to apply.
-            qubit (int): The index of the qubit to apply the gate to.
+        Validates qubit and applies a single-qubit gate.
         """
         self.validate_qubit(qubit)
         self._apply_single_gate(gate, qubit)
 
     def apply_control_gate(self, gate: np.ndarray, control: int, target: int):
         """
-        Apply a controlled gate.
-
-        Parameters:
-            gate (np.ndarray): The gate matrix.
-            control (int): The control qubit.
-            target (int): The target qubit.
+        Validates qubits and applies a controlled gate.
         """
         self.validate_qubit(control)
         self.validate_qubit(target)
+
+        if control == target:
+            raise ValueError("Control qubit cannot be the target qubit")
+
         self._apply_control_gate(gate, control, target)
 
     def validate_qubit(self, qubit: int):
@@ -88,10 +77,6 @@ class Simulator(ABC):
         """
         Abstract method to apply a single-qubit gate. Must be implemented
         by subclasses.
-
-        Parameters:
-            gate (np.ndarray): The gate matrix to apply.
-            qubit (int): The index of the qubit to apply the gate to.
         """
 
     @abstractmethod
@@ -101,9 +86,4 @@ class Simulator(ABC):
         """
         Abstract method to apply a controlled gate. Must be implemented
         by subclasses.
-
-        Parameters:
-            gate (np.ndarray): The gate matrix to apply.
-            control_qubit (int): The control qubit index.
-            target_qubit (int): The target qubit index.
         """

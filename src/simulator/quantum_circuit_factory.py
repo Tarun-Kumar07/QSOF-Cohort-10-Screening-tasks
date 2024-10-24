@@ -1,3 +1,7 @@
+"""
+This module provides methods for creating quantum circuits.
+"""
+
 from enum import Enum
 from typing import Any, Callable
 
@@ -45,7 +49,8 @@ def zero_state(num_qubits: int) -> np.ndarray:
 def __get_simulator_type(simulator_type: SimulatorType) -> Callable[[Any], Simulator]:
     if simulator_type is SimulatorType.MATRIX:
         return lambda state: MatrixSimulator(state=state)
-    elif simulator_type is SimulatorType.TENSOR:
+
+    if simulator_type is SimulatorType.TENSOR:
         return lambda state: TensorSimulator(state=state)
-    else:
-        raise ValueError(f"Unsupported simulator type: {simulator_type}")
+
+    raise ValueError(f"Unsupported simulator type: {simulator_type}")

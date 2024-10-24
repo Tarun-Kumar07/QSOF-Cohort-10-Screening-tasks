@@ -39,7 +39,9 @@ class TensorSimulator(Simulator):
         )
 
     def convert_to_big_endian_qubit(self, qubit):
-        """This is required as tensor product article assumed qubits to be in big endian order."""
+        """
+        This is required as tensor product in the article assumed qubits to be in big endian order.
+        """
         return self.num_qubits - qubit - 1
 
     def get_state(self) -> np.ndarray:
