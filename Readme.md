@@ -1,46 +1,46 @@
 # QOSF Cohort 10 Screening Task
 
-This repository contains the submission for Task 1, which involves statevector simulation of quantum circuits. The problem statement is to simulate quantum circuits using matrix multiplication and tensor multiplication, and then compare the results. Below are the key questions addressed before diving into the coding:
+This repository contains the submission for **Task 1**, which involves the _statevector simulation of quantum circuits_. The objective is to simulate quantum circuits using both **matrix multiplication** and **tensor multiplication**, followed by a comparison of the results. The following key questions were considered before diving into the implementation:
 
-1. How should qubits be represented?
-2. How do the two simulators work, and why might one be better than the other?
-3. How can we verify that the simulators are functioning correctly?
-4. What experiments can be conducted to determine why one simulator is better?
-5. Bonus questions...
+1. **How should qubits be represented?**
+2. **Why is the simulator using tensor multiplication faster than matrix multiplication?**  
+   - Includes experimental results to validate this claim.
+3. **Bonus Questions:**
+   - Sampling techniques.
+   - Expectation value computation.
 
-The answers to these questions are explained in detail below, followed by an overview of the code design.
+Below, each question is addressed in detail, followed by an overview of the **code design**.
 
 ## Q1. How should qubits be represented?
 - The state of qubits is represented as vectors, and there are two main conventions for ordering qubits:
     - **Little-endian**
-      - The least significant qubit is considered the first qubit.
+      - The _least significant qubit_ is considered the first qubit.
       - For example, $\ket{6} = \ket{110}$.
     - **Big-endian**
-      - The most significant qubit is considered the first qubit.
+      - The _most significant qubit_ is considered the first qubit.
       - For example, $\ket{6} = \ket{011}$.
 
-- I chose to represent qubits using the little-endian convention because it aligns with how numbers are typically converted to binary strings.
-- Additionally, Qiskit uses this same convention, making verification easier.
+- I have chosen to represent qubits using the **little-endian** convention because it aligns with how numbers are typically converted to binary strings.
+- Additionally, _Qiskit uses this same convention_, making verification and comparisons more straightforward.
 
-## Q2. How do the simulators work, and why might one be better than the other?
+## Q2. Why is the tensor-based simulator faster than the matrix-based simulator?
+- To understand the performance difference, let's analyze the number of multiplications required when applying an `X gate` to the first qubit out of `m` qubits.
 
+- #### Matrix-based Simulator
+  - The computational complexity for generating the unitary matrix is proportional to the number of elements, i.e., $O(2^{2m})$.
+  - Multiplying the unitary matrix with the state vector has a complexity of $O(2^{3m})$.
+  - **Overall complexity**: $O(2^{3m})$.
 
+- #### Tensor-based Simulator
+  - The number of multiplications in a tensor product equals the total number of elements in both tensors.
+  - In this scenario, the X gate is a (2x2) tensor, and the qubit state has dimensions (2, 2, ..., repeated _m_ times).
+  - The computational complexity of the multiplications will be _O(4 * 2^m)_, which simplifies to _O(2^m)_.
 
+- _Thus, we significantly improved the time complexity from O(2^{3m}) to O(2^m),_ demonstrating why the tensor-based approach is more efficient.
 
-## Q3. How can we verify that the simulators are functioning correctly?
+### Experiment results
+- With a **time limit of 80 seconds** and a **circuit depth of 10**, the **matrix simulator** could simulate **14 qubits**, while the **tensor simulator** achieved **29 qubits**. This shows an **almost twofold speedup**.
 
+---
 
-
-
-## Q4. What experiments can be conducted to determine why one simulator is better?
-
-
-
-
-## Q5. Bonus Questions...
-
-
-
-
-## Code Design
-
+The subsequent sections will discuss how to validate the simulator's accuracy, proof of performance differences, and answers to bonus questions related to _sampling_ and _expectation values_.
