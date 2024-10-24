@@ -40,7 +40,11 @@ Below, each question is addressed in detail, followed by an overview of the **co
 
 ### Experiment results
 - With a **time limit of 80 seconds** and a **circuit depth of 10**, the **matrix simulator** could simulate **14 qubits**, while the **tensor simulator** achieved **29 qubits**. This shows an **almost twofold speedup**.
+- In below graphs we can see clearly tensor simulator efficiency over different number of qubits and depths
+  - ![Depth_2](./src/benchmark/data/plots/Computation_Time_Comparison_Depth_2.png) 
+  - ![Depth_4](./src/benchmark/data/plots/Computation_Time_Comparison_Depth_4.png) 
+  - ![Depth_8](./src/benchmark/data/plots/Computation_Time_Comparison_Depth_8.png) 
 
 ---
 
-The subsequent sections will discuss how to validate the simulator's accuracy, proof of performance differences, and answers to bonus questions related to _sampling_ and _expectation values_.
+## Q3. Bonus questions...
