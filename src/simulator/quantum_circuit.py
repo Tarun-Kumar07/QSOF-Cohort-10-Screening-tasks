@@ -94,7 +94,9 @@ def sample(qc: QuantumCircuit, sample_count: int) -> Dict[str, int]:
 
     num_qubits = qc.get_num_qubits()
     possible_states = np.arange(2**num_qubits)
-    possible_bit_strings = [format(state, f"0{num_qubits}b") for state in possible_states]
+    possible_bit_strings = [
+        format(state, f"0{num_qubits}b") for state in possible_states
+    ]
 
     sampled_states = np.random.choice(possible_bit_strings, size=sample_count, p=probs)
 
@@ -120,7 +122,9 @@ def expectation(qc: QuantumCircuit, pauli_word: Dict[int, str]) -> float:
         elif pauli == "Z":
             qc.z(qubit)
         else:
-            raise ValueError(f"For qubit {qubit}, '{pauli}' is not one of pauli observables")
+            raise ValueError(
+                f"For qubit {qubit}, '{pauli}' is not one of pauli observables"
+            )
 
     exp = np.dot(state_before_applying_observables, qc.get_state())
 

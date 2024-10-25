@@ -1,3 +1,7 @@
+"""
+This script generates dataset consisting of quantum circuits which will be used to benchmark the simulators
+"""
+
 import csv
 import itertools
 from typing import List, Tuple

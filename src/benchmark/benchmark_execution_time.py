@@ -1,3 +1,7 @@
+"""
+This script generates report comparing matrix multiplication, tensor multiplication and qiskit statevector simulator
+"""
+
 import ast
 import csv
 import time
