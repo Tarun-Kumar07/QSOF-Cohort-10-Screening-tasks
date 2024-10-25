@@ -88,6 +88,7 @@ src
   - [**TensorSimulator**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/tensor_simulator.py#L12): Uses **tensor multiplication** for gate operations.
 - **[Factory methods](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit_factory.py)** are provided for creating quantum circuits.
 - Along with the source code, **unit tests** have been written to ensure accurate functionality, achieving a **test coverage of 98%**.
+- [GitHub Actions](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/actions) is used to continuously run tests on every commit to the main branch.
 
 ### Benchmark
 
