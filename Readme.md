@@ -50,7 +50,6 @@ Below, each question is addressed in detail, followed by an overview of the **co
 
 ---
 ## Code design
-## Code Design
 
 The code is composed of two main modules:
 
