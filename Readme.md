@@ -46,6 +46,7 @@ Below, each question is addressed in detail, followed by an overview of the **co
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_2.png" alt="Alt Text" width="500" height="300">
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_4.png" alt="Alt Text" width="500" height="300">
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_8.png" alt="Alt Text" width="500" height="300">
+- All the above stats are derived from data in [report.csv](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/report.csv)
 
 ---
 ## Code design
