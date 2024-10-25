@@ -4,8 +4,8 @@ This repository contains the submission for **Task 1**, which involves the _stat
 
 1. **How should qubits be represented?**
 2. **Why is the simulator using tensor multiplication faster than matrix multiplication?**  
-   - Includes experimental results to validate this claim.
-3. **Bonus Questions:**
+3. **How to perform experiment to prove Q2 ?**
+4. **Bonus Questions:**
    - Sampling techniques.
    - Expectation value computation.
 
@@ -21,7 +21,7 @@ Below, each question is addressed in detail, followed by an overview of the **co
       - For example, $\ket{q_{0}q_{1}q_{2}}$.
 
 - I have chosen to represent qubits using the **little-endian** convention because it aligns with how numbers are typically converted to binary strings.
-- Additionally, _Qiskit uses this same convention_, making verification and comparisons more straightforward.
+- Additionally, _[Qiskit](https://www.ibm.com/quantum/qiskit) uses this same convention_, making verification and comparisons more straightforward.
 
 ## Q2. Why is the tensor-based simulator faster than the matrix-based simulator?
 - To understand the performance difference, let's analyze the number of multiplications required when applying an `X gate` to the first qubit out of `m` qubits.
@@ -38,20 +38,45 @@ Below, each question is addressed in detail, followed by an overview of the **co
 
 - Thus, we significantly improved the time complexity from $O(2^{3m})$ to $O(2^m)$, demonstrating why the tensor-based approach is more efficient.
 
-### Experiment results
+## Q3. How to perform experiment to prove Q2 ?
+### Experiment Setup
+
+- The experiments were conducted on a [**M2 MacBook Air**](https://support.apple.com/en-in/111867).
+- A dataset of **random quantum circuits** was generated to benchmark the performance of different simulators:
+  - The dataset includes circuits with **2, 4, 6, and 8 qubits**, and circuit depths of **2, 4, and 8**.
+  - All generated circuits are stored in [**dataset.csv**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/dataset.csv).
+- Using the given dataset, the circuits were simulated using three different approaches: **matrix multiplication**, **tensor multiplication**, and **Qiskit statevector simulator**.
+  - The **execution time** and **fidelity results** for each approach are recorded in [**report.csv**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/report.csv).
+
+### Result
 - With a **time limit of 80 seconds** and a **circuit depth of 10**, the **matrix simulator** could simulate **14 qubits**, while the **tensor simulator** achieved **29 qubits**. This demonstrates an **almost twofold speedup**.
-- Additionally, both simulators were compared to the **Qiskit statevector simulator** for accuracy, and **both achieved a fidelity of 1**, indicating perfect accuracy.
+- Additionally, both simulators were compared to the **Qiskit statevector simulator** for accuracy, and **both achieved a fidelity of 1**, indicating almost perfect accuracy (rouding was done upto 5 digits).
 - Interestingly, the **tensor simulator outperformed Qiskit**, which is surprising given that **Qiskit is a general-purpose simulator**. The reason for this could be that **Qiskit's support for a wide range of gates and operations** introduces additional processing overheads, impacting its performance.
 - In below graphs we can see clearly tensor simulator efficiency over different number of qubits and depths
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_2.png" alt="Alt Text" width="500" height="300">
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_4.png" alt="Alt Text" width="500" height="300">
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_8.png" alt="Alt Text" width="500" height="300">
-- All the above stats are derived from data in [report.csv](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/report.csv)
 
 ---
 ## Code design
-
-The code is composed of two main modules:
+The code is composed of two main modules as shown below:
+```
+src  
+├── simulator  
+│   ├── matrix_simulator.py  
+│   ├── quantum_circuit.py  
+│   ├── quantum_circuit_factory.py  
+│   ├── simulator.py  
+│   └── tensor_simulator.py  
+└── benchmark
+    ├── benchmark_execution_time.py  
+    ├── benchmark_num_qubits.py  
+    ├── data  
+    │   ├── dataset.csv  
+    │   ├── plots 
+    │   └── report.csv  
+    └── dataset_generator.py  
+```
 
 ### Simulator
 
@@ -72,7 +97,7 @@ The code is composed of two main modules:
 - The [**benchmark_execution_time.py**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/benchmark_execution_time.py) script compares the **execution time** for different quantum circuits across various simulation strategies. The output is stored in [**report.csv**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/report.csv).
   
 
-## Q3. Bonus questions...
+## Q4. Bonus questions...
 ### Sampling
 - Sampling is done by generating probability distribution from the state of quantum circuit.
 - Using the probability distribution samples are generated according to the number of count provided.
