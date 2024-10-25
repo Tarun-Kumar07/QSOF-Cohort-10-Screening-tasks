@@ -15,10 +15,10 @@ Below, each question is addressed in detail, followed by an overview of the **co
 - The state of qubits is represented as vectors, and there are two main conventions for ordering qubits:
     - **Little-endian**
       - The _least significant qubit_ is considered the first qubit.
-      - For example, $\ket{6} = \ket{110}$.
+      - For example, $\ket{q_{2}q_{1}q_{0}}$.
     - **Big-endian**
       - The _most significant qubit_ is considered the first qubit.
-      - For example, $\ket{6} = \ket{011}$.
+      - For example, $\ket{q_{0}q_{1}q_{2}}$.
 
 - I have chosen to represent qubits using the **little-endian** convention because it aligns with how numbers are typically converted to binary strings.
 - Additionally, _Qiskit uses this same convention_, making verification and comparisons more straightforward.
@@ -39,7 +39,9 @@ Below, each question is addressed in detail, followed by an overview of the **co
 - Thus, we significantly improved the time complexity from $O(2^{3m})$ to $O(2^m)$, demonstrating why the tensor-based approach is more efficient.
 
 ### Experiment results
-- With a **time limit of 80 seconds** and a **circuit depth of 10**, the **matrix simulator** could simulate **14 qubits**, while the **tensor simulator** achieved **29 qubits**. This shows an **almost twofold speedup**.
+- With a **time limit of 80 seconds** and a **circuit depth of 10**, the **matrix simulator** could simulate **14 qubits**, while the **tensor simulator** achieved **29 qubits**. This demonstrates an **almost twofold speedup**.
+- Additionally, both simulators were compared to the **Qiskit statevector simulator** for accuracy, and **both achieved a fidelity of 1**, indicating perfect accuracy.
+- Interestingly, the **tensor simulator outperformed Qiskit**, which is surprising given that **Qiskit is a general-purpose simulator**. The reason for this could be that **Qiskit's support for a wide range of gates and operations** introduces additional processing overheads, impacting its performance.
 - In below graphs we can see clearly tensor simulator efficiency over different number of qubits and depths
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_2.png" alt="Alt Text" width="500" height="300">
   <img src="./src/benchmark/data/plots/Computation_Time_Comparison_Depth_4.png" alt="Alt Text" width="500" height="300">
