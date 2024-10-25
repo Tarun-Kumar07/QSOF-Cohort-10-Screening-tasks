@@ -50,14 +50,28 @@ Below, each question is addressed in detail, followed by an overview of the **co
 
 ---
 ## Code design
-- The [QuantumCircuit](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit.py#L31) class defines how various operations and gates are applied to a quantum circuit. It uses a [Simulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26) to perform gate operations.
-- The [Simulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26) class contains the logic for transitioning between quantum states. It also performs validations before applying any gates.
-- Gate applications are handled by two subclasses of [Simulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26):
-  - [MatrixSimulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/matrix_simulator.py#L16): Uses matrix multiplication for gate operations.
-  - [TensorSimulator](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/tensor_simulator.py#L12): Uses tensor multiplication for gate operations.
-- [Factory methods](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit_factory.py) are provided for creating quantum circuits.
-- In addition to the source code, unit tests have been written to ensure accurate functionality, with a **test coverage of 98%**.
+## Code Design
 
+The code is composed of two main modules:
+
+### Simulator
+
+- This module contains the **logic for building and simulating quantum circuits**.
+- The [**QuantumCircuit**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit.py#L31) class defines how various **operations and gates** are applied to a circuit. It utilizes a [**Simulator**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26) to perform gate operations.
+- The [**Simulator**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26) class includes the **logic for transitioning between quantum states** and performs **validations before applying gates**.
+- Gate applications are managed by two subclasses of [**Simulator**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/simulator.py#L26):
+  - [**MatrixSimulator**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/matrix_simulator.py#L16): Uses **matrix multiplication** for gate operations.
+  - [**TensorSimulator**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/tensor_simulator.py#L12): Uses **tensor multiplication** for gate operations.
+- **[Factory methods](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/simulator/quantum_circuit_factory.py)** are provided for creating quantum circuits.
+- Along with the source code, **unit tests** have been written to ensure accurate functionality, achieving a **test coverage of 98%**.
+
+### Benchmark
+
+- This module includes **scripts used for benchmarking simulators**.
+- The [**dataset_generator.py**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/dataset_generator.py) script generates **blueprints of quantum circuits**, which are then simulated using various simulators. The circuits are stored in [**dataset.csv**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/dataset.csv).
+- The [**benchmark_num_qubits.py**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/benchmark_num_qubits.py) script is used to **simulate quantum circuits with varying numbers of qubits**, to determine the **maximum number of qubits that can be simulated**.
+- The [**benchmark_execution_time.py**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/benchmark_execution_time.py) script compares the **execution time** for different quantum circuits across various simulation strategies. The output is stored in [**report.csv**](https://github.com/Tarun-Kumar07/QSOF-Cohort-10-Screening-tasks/blob/main/src/benchmark/data/report.csv).
+  
 
 ## Q3. Bonus questions...
 ### Sampling
